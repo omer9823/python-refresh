@@ -1,0 +1,24 @@
+from typing import List
+from .card import Card
+
+
+class Hand:
+    def __init__(self):
+        self.cards: List[Card] = []
+
+    def add_card(self, card: Card):
+        self.cards.append(card)
+
+    def total(self) -> int:
+        total = sum(card.value for card in self.cards)
+        aces = sum(1 for card in self.cards if card.rank == 'A')
+        while total > 21 and aces:
+            total -= 10
+            aces -= 1
+        return total
+
+    def is_blackjack(self) -> bool:
+        return self.total() == 21 and len(self.cards) == 2
+
+    def is_bust(self) -> bool:
+        return self.total() > 21
