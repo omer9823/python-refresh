@@ -25,8 +25,13 @@ def play():
             print("Bust!")
             break
 
-        advice = AdvisorService.advise(game.player_hand.total(), game.dealer_hand.cards[0].rank)
-        print(f"Advisor suggests: {advice.upper()}")
+        basic_advice = AdvisorService.advise_basic(game.player_hand, game.dealer_hand.cards[0].rank)
+        count_adjusted_advice = AdvisorService.advise_with_count(
+            game.player_hand, game.dealer_hand.cards[0].rank, game.shoe.count
+        )
+
+        print(f"Basic Strategy recommends: {basic_advice.upper()}")
+        print(f"Count-Adjusted Strategy recommends: {count_adjusted_advice.upper()}")
 
         move = input("Hit or Stand? ").lower()
         if move == 'hit':

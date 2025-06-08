@@ -22,3 +22,7 @@ class Hand:
 
     def is_bust(self) -> bool:
         return self.total() > 21
+    
+    def is_soft(self) -> bool:
+        total = sum(card.value for card in self.cards)
+        return any(card.rank == 'A' for card in self.cards) and total <= 21
