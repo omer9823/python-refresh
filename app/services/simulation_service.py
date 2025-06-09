@@ -12,7 +12,7 @@ class SimulationService:
 
         for _ in range(num_hands):
             # Check if penetration limit reached, reshuffle if needed
-            if game.shoe.penetration() >= self.penetration:
+            if game.shoe.penetration >= self.penetration:
                 game = GameService(self.num_decks)
 
             game.start_game()
