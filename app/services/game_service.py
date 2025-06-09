@@ -21,3 +21,26 @@ class GameService:
     def dealer_play(self):
         while self.dealer_hand.total() < 17:
             self.dealer_hand.add_card(self.shoe.draw())
+
+    def check_initial_blackjack(self) -> str:
+        player_bj = self.player_hand.is_blackjack()
+        dealer_bj = self.dealer_hand.is_blackjack()
+
+        if player_bj and dealer_bj:
+            return "push"
+        if player_bj:
+            return "player"
+        if dealer_bj:
+            return "dealer"
+        return "none"
+            
+    def determine_winner(self) -> str:
+            if self.player_hand.is_bust():
+                return "dealer"
+            if self.dealer_hand.is_bust():
+                return "player"
+            if self.player_hand.total() > self.dealer_hand.total():
+                return "player"
+            if self.player_hand.total() < self.dealer_hand.total():
+                return "dealer"
+            return "push"
