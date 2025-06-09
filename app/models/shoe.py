@@ -36,3 +36,10 @@ class Shoe:
 
     def needs_shuffle(self) -> bool:
         return self.penetration < 0.2
+    
+    @property
+    def true_count(self) -> float:
+        decks_remaining = len(self.cards) / 52
+        if decks_remaining == 0:
+            return 0
+        return self.count / decks_remaining

@@ -26,9 +26,9 @@ def play():
             break
 
         basic_advice = AdvisorService.advise_basic(game.player_hand, game.dealer_hand.cards[0].rank)
+        true_count = game.shoe.true_count
         count_adjusted_advice = AdvisorService.advise_with_count(
-            game.player_hand, game.dealer_hand.cards[0].rank, game.shoe.count
-        )
+            game.player_hand, game.dealer_hand.cards[0].rank, true_count)
 
         print(f"Basic Strategy recommends: {basic_advice.upper()}")
         print(f"Count-Adjusted Strategy recommends: {count_adjusted_advice.upper()}")

@@ -26,3 +26,6 @@ class Hand:
     def is_soft(self) -> bool:
         total = sum(card.value for card in self.cards)
         return any(card.rank == 'A' for card in self.cards) and total <= 21
+    
+    def is_pair(self) -> bool:
+        return len(self.cards) == 2 and self.cards[0].rank == self.cards[1].rank
