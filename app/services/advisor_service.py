@@ -28,7 +28,20 @@ class AdvisorService:
         player_total = player_hand.total()
         dealer_value = 11 if dealer_upcard == 'A' else (int(dealer_upcard) if dealer_upcard.isdigit() else 10)
 
-        if basic_advice == "hit" and true_count >= 4 and player_total == 16 and dealer_value == 10:
+        # Rule 1: Stand 16 vs 10 if true count >= 0
+        if basic_advice == "hit" and true_count >= 0 and player_total == 16 and dealer_value == 10:
             return "stand"
+
+        # Rule 2: Stand 15 vs 10 if true count >= 4
+        if basic_advice == "hit" and true_count >= 4 and player_total == 15 and dealer_value == 10:
+            return "stand"
+
+        # Rule 3: Double 10 vs 10 if true count >= 4
+        if basic_advice == "hit" and true_count >= 4 and player_total == 10 and dealer_value == 10:
+            return "double"
+
+        # Rule 4: Double 9 vs 2 if true count >= 1
+        if basic_advice == "hit" and true_count >= 1 and player_total == 9 and dealer_value == 2:
+            return "double"
 
         return basic_advice
