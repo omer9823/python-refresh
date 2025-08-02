@@ -24,8 +24,21 @@ class Hand:
         return self.total() > 21
     
     def is_soft(self) -> bool:
-        total = sum(card.value for card in self.cards)
-        return any(card.rank == 'A' for card in self.cards) and total <= 21
+        total = 0
+        ace_count = 0
+
+        for card in self.cards:
+            if card.rank == 'A':
+                ace_count += 1
+                total += 11
+            else:
+                total += card.value
+
+        while total > 21 and ace_count > 0:
+            total -= 10
+            ace_count -= 1
+
+        return ace_count > 0
     
     def is_pair(self) -> bool:
         return len(self.cards) == 2 and self.cards[0].rank == self.cards[1].rank
