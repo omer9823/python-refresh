@@ -1,4 +1,4 @@
-# Python Refresh Project
+# Blackjack Casino Project
 
 ## Prerequisites
 
@@ -19,55 +19,33 @@
    pip install -r requirements.txt
    ```
 
-## Running the Console Runner
+---
 
-To start the main console interface:
+## Running the Console Blackjack Game
+
+To play blackjack in your terminal:
 ```sh
 python -m console.console_runner
 ```
 
-To run the player runner:
-```sh
-python -m console.player_runner
-```
-
-## Running the Simulation
-
-```sh
-python simulation/simulation_runner.py
-```
-
-## Running the FastAPI Server
-
-```sh
-uvicorn app.main:app --reload
-```
-
 ---
 
-## Playing Blackjack via WebSocket (with HTML Client)
+## Running the Full Web App (Casino UI)
 
 1. **Start the FastAPI server:**
    ```sh
    uvicorn app.main:app --reload
    ```
-2. **Open the HTML client:**
-   - Open `static/blackjack.html` in your web browser (double-click or right-click and choose "Open with browser").
-   - The client will connect to the backend at `ws://localhost:8000/ws/game`.
-   - Use the "Start Game", "Hit", and "Stand" buttons to play.
+2. **Open the casino client in your browser:**
+   [http://localhost:8000/static/blackjack.html](http://localhost:8000/static/blackjack.html)
 
-**Note:** If you want to serve the HTML file via FastAPI, you can add this to your `main.py`:
-```python
-from fastapi.staticfiles import StaticFiles
-app.mount("/static", StaticFiles(directory="static"), name="static")
-```
-Then access the client at [http://localhost:8000/static/blackjack.html](http://localhost:8000/static/blackjack.html).
+- Play blackjack with a modern casino interface.
+- The AI Advisor panel shows real-time basic and count-adjusted strategy.
+- Place bets visually (betting is currently visual only).
+- Play using the Deal, Hit, and Stand buttons.
 
 ---
 
 **Notes:**
 - Make sure your virtual environment is activated before running any of the above commands.
-- If you use Poetry, you can run commands with `poetry run`, for example:
-  ```sh
-  poetry run python -m console.console_runner
-  ```
+- You do NOT need Poetry or pyproject.toml for this project. All dependencies are managed with `requirements.txt` and `pip`.
