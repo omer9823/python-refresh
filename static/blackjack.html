@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BLACKJACK - Casino Experience</title>
+    <link rel="stylesheet" href="/static/blackjack.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">BLACKJACK</div>
+        <div class="header-sub">Professional Casino Experience</div>
+        <div class="status-area" id="status-area"></div>
+    </div>
+    <div class="main">
+        <div class="game-area">
+            <div class="section-title">&#x1F451; Dealer &#x1F451;</div>
+            <div class="cards-row" id="dealer-cards"></div>
+            <div class="section-title">&#x26A1; Player &#x26A1;</div>
+            <div class="cards-row" id="player-cards"></div>
+            <div class="balance-area">
+                <span class="balance-label">Your Balance</span>
+                <span class="balance-value" id="balance">$1,000</span>
+            </div>
+            <div class="bet-area">
+                <div class="chip red" data-bet="5">$5</div>
+                <div class="chip blue" data-bet="10">$10</div>
+                <div class="chip green" data-bet="25">$25</div>
+                <div class="chip purple" data-bet="50">$50</div>
+                <div class="chip yellow" data-bet="100">$100</div>
+                <span class="bet-value" id="bet-value">$25</span>
+            </div>
+            <div class="button-row">
+                <button id="start">Deal Cards</button>
+                <button id="hit" disabled>Hit</button>
+                <button id="stand" disabled>Stand</button>
+            </div>
+        </div>
+        <div class="advisor-panel">
+            <div class="section-title">AI Strategy Advisor</div>
+            <div id="advisor-basic">Basic Strategy: -</div>
+            <div id="advisor-count">Count-Adjusted: -</div>
+            <div id="advisor-truecount">True Count: 0.0</div>
+        </div>
+    </div>
+    <script src="/static/blackjack.js"></script>
+</body>
+</html>
