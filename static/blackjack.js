@@ -85,7 +85,8 @@ function updateFromState(data) {
     // Advisor
     advisorBasic.textContent = "Basic Strategy: " + (data.basic_advice ? data.basic_advice.toUpperCase() : '-');
     advisorCount.textContent = "Count-Adjusted: " + (data.count_advice ? data.count_advice.toUpperCase() : '-');
-    advisorTrueCount.textContent = "True Count: " + (data.true_count !== undefined && data.true_count !== null ? data.true_count : '0.0');
+    const tc = (data.true_count !== undefined && data.true_count !== null) ? Math.round(data.true_count) : 0;
+    advisorTrueCount.textContent = "True Count: " + tc;
 
     // Status
     let msg = data.message || '';
