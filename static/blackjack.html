@@ -15,8 +15,8 @@
         <div class="game-area">
             <div class="section-title">&#x1F451; Dealer &#x1F451;</div>
             <div class="cards-row" id="dealer-cards"></div>
-            <div class="section-title">&#x26A1; Player &#x26A1;</div>
-            <div class="cards-row" id="player-cards"></div>
+            <div class="section-title">&#x26A1; Player Hands &#x26A1;</div>
+            <div class="hands-wrapper" id="player-hands"></div>
             <div class="balance-area">
                 <span class="balance-label">Your Balance</span>
                 <span class="balance-value" id="balance">$1,000</span>
@@ -33,6 +33,8 @@
                 <button id="start">Deal Cards</button>
                 <button id="hit" disabled>Hit</button>
                 <button id="stand" disabled>Stand</button>
+                <button id="split" disabled>Split</button>
+                <button id="double" disabled>Double</button>
             </div>
         </div>
         <div class="advisor-panel">
@@ -42,6 +44,6 @@
             <div id="advisor-truecount">True Count: 0.0</div>
         </div>
     </div>
-    <script src="/static/blackjack.js"></script>
+    <script src="/static/blackjack.js?v=2"></script>
 </body>
 </html>

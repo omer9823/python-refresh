@@ -3,8 +3,10 @@ const statusArea = document.getElementById('status-area');
 const startBtn = document.getElementById('start');
 const hitBtn = document.getElementById('hit');
 const standBtn = document.getElementById('stand');
+const splitBtn = document.getElementById('split');
+const doubleBtn = document.getElementById('double');
 const dealerCards = document.getElementById('dealer-cards');
-const playerCards = document.getElementById('player-cards');
+const playerHandsWrapper = document.getElementById('player-hands');
 const advisorBasic = document.getElementById('advisor-basic');
 const advisorCount = document.getElementById('advisor-count');
 const advisorTrueCount = document.getElementById('advisor-truecount');
@@ -15,10 +17,12 @@ const chips = document.querySelectorAll('.chip');
 let balance = 1000;
 let bet = 25;
 
-function setButtons(start, hit, stand) {
+function setButtons({ start, hit, stand, split, double }) {
     startBtn.disabled = !start;
     hitBtn.disabled = !hit;
     standBtn.disabled = !stand;
+    splitBtn.disabled = !split;
+    doubleBtn.disabled = !double;
 }
 
 function getSuitSymbol(suit) {
@@ -44,6 +48,26 @@ function renderCards(container, cards) {
     });
 }
 
+function renderPlayerHands(player_hands, activeIndex) {
+    playerHandsWrapper.innerHTML = '';
+    player_hands.forEach((hand, idx) => {
+        const block = document.createElement('div');
+        block.className = 'hand-block' + (idx === activeIndex ? ' active' : '');
+
+        const header = document.createElement('div');
+        header.className = 'hand-header';
+        header.innerHTML = `<span>Hand ${idx + 1}/${player_hands.length}</span><span>Total: ${hand.total}${hand.is_blackjack ? ' (Blackjack)' : ''}${hand.is_bust ? ' (Bust)' : ''}</span>`;
+        block.appendChild(header);
+
+        const row = document.createElement('div');
+        row.className = 'cards-row';
+        renderCards(row, hand.cards);
+        block.appendChild(row);
+
+        playerHandsWrapper.appendChild(block);
+    });
+}
+
 function resultMessage(result) {
     if (result === "dealer") return "Dealer wins!";
     if (result === "player") return "You win!";
@@ -53,24 +77,36 @@ function resultMessage(result) {
     return result;
 }
 
-function showStatus(data) {
-    if (data.error) {
-        statusArea.textContent = "Error: " + data.error;
-        return;
-    }
-    renderCards(playerCards, data.player_hand.cards);
-    renderCards(dealerCards, data.dealer_hand.cards);
+function updateFromState(data) {
+    // Dealer and hands
+    renderCards(dealerCards, data.dealer_hand.cards || []);
+    renderPlayerHands(data.player_hands || [], data.active_hand_index || 0);
+
+    // Advisor
     advisorBasic.textContent = "Basic Strategy: " + (data.basic_advice ? data.basic_advice.toUpperCase() : '-');
     advisorCount.textContent = "Count-Adjusted: " + (data.count_advice ? data.count_advice.toUpperCase() : '-');
     advisorTrueCount.textContent = "True Count: " + (data.true_count !== undefined && data.true_count !== null ? data.true_count : '0.0');
-    let output = "";
-    if (data.result && data.result !== "none") {
-        output += resultMessage(data.result) + " ";
+
+    // Status
+    let msg = data.message || '';
+    if (data.round_over && Array.isArray(data.final_results)) {
+        const resultsText = data.final_results.map((r, i) => `Hand ${i + 1}: ${resultMessage(r)}`).join(' | ');
+        msg = (msg ? msg + ' ' : '') + resultsText;
     }
-    if (data.message) {
-        output += data.message;
+    statusArea.textContent = msg;
+
+    // Buttons
+    if (data.round_over) {
+        setButtons({ start: true, hit: false, stand: false, split: false, double: false });
+    } else {
+        setButtons({
+            start: false,
+            hit: true,
+            stand: true,
+            split: !!data.can_split,
+            double: !!data.can_double,
+        });
     }
-    statusArea.textContent = output;
 }
 
 function updateBalanceAndBet() {
@@ -85,7 +121,6 @@ chips.forEach(chip => {
         bet = parseInt(chip.getAttribute('data-bet'));
         updateBalanceAndBet();
     });
-    // Default select $25
     if (parseInt(chip.getAttribute('data-bet')) === 25) {
         chip.classList.add('selected');
     }
@@ -97,37 +132,46 @@ startBtn.onclick = function() {
     if (!ws || ws.readyState !== 1) {
         ws = new WebSocket('ws://localhost:8000/ws/game');
         ws.onopen = () => {
-            ws.send(JSON.stringify({action: 'start'}));
-            setButtons(false, true, true);
+            ws.send(JSON.stringify({ action: 'start' }));
+            setButtons({ start: false, hit: true, stand: true, split: false, double: false });
         };
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            showStatus(data);
-            if (data.result && data.result !== 'none') {
-                setButtons(true, false, false);
-            }
+            updateFromState(data);
         };
-        ws.onerror = (event) => {
+        ws.onerror = () => {
             statusArea.textContent = "WebSocket connection error";
-            setButtons(true, false, false);
+            setButtons({ start: true, hit: false, stand: false, split: false, double: false });
         };
-        ws.onclose = (event) => {
-            setButtons(true, false, false);
+        ws.onclose = () => {
+            setButtons({ start: true, hit: false, stand: false, split: false, double: false });
         };
     } else {
-        ws.send(JSON.stringify({action: 'start'}));
-        setButtons(false, true, true);
+        ws.send(JSON.stringify({ action: 'start' }));
+        setButtons({ start: false, hit: true, stand: true, split: false, double: false });
     }
 };
 
 hitBtn.onclick = function() {
     if (ws && ws.readyState === 1) {
-        ws.send(JSON.stringify({action: 'hit'}));
+        ws.send(JSON.stringify({ action: 'hit' }));
     }
 };
 
 standBtn.onclick = function() {
     if (ws && ws.readyState === 1) {
-        ws.send(JSON.stringify({action: 'stand'}));
+        ws.send(JSON.stringify({ action: 'stand' }));
+    }
+};
+
+splitBtn.onclick = function() {
+    if (ws && ws.readyState === 1) {
+        ws.send(JSON.stringify({ action: 'split' }));
+    }
+};
+
+doubleBtn.onclick = function() {
+    if (ws && ws.readyState === 1) {
+        ws.send(JSON.stringify({ action: 'double' }));
     }
 };
